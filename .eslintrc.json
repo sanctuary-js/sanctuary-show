@@ -1,0 +1,23 @@
+{
+  "root": true,
+  "extends": ["./node_modules/sanctuary-style/eslint-es3.json"],
+  "overrides": [
+    {
+      "files": ["*.md"],
+      "plugins": ["markdown"],
+      "globals": {"Maybe": false, "show": false},
+      "rules": {
+        "func-call-spacing": ["error", "always", {"allowNewlines": true}],
+        "strict": ["off"]
+      }
+    },
+    {
+      "files": ["test/**/*.js"],
+      "rules": {
+        "comma-dangle": ["error", "always-multiline"],
+        "func-call-spacing": ["error", "always", {"allowNewlines": true}],
+        "func-style": ["error", "declaration", {"allowArrowFunctions": true}]
+      }
+    }
+  ]
+}
