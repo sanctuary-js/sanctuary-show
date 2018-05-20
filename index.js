@@ -36,14 +36,14 @@
 
   /* istanbul ignore else */
   if (typeof module === 'object' && typeof module.exports === 'object') {
-    module.exports = f();
+    module.exports = f ();
   } else if (typeof define === 'function' && define.amd != null) {
-    define([], f);
+    define ([], f);
   } else {
-    self.sanctuaryShow = f();
+    self.sanctuaryShow = f ();
   }
 
-}(function() {
+} (function() {
 
   'use strict';
 
@@ -56,8 +56,13 @@
   //  entry :: Object -> String -> String
   function entry(o) {
     return function(k) {
-      return show(k) + ': ' + show(o[k]);
+      return show (k) + ': ' + show (o[k]);
     };
+  }
+
+  //  sortedKeys :: Object -> Array String
+  function sortedKeys(o) {
+    return (Object.keys (o)).sort ();
   }
 
   //# show :: Showable a => a -> String
@@ -106,66 +111,65 @@
   //. '{"x": [1, 2], "y": [3, 4], "z": [5, 6]}'
   //. ```
   function show(x) {
-    if (seen.indexOf(x) >= 0) return '<Circular>';
+    if (seen.indexOf (x) >= 0) return '<Circular>';
 
-    switch (Object.prototype.toString.call(x)) {
+    switch (Object.prototype.toString.call (x)) {
 
       case '[object Boolean]':
         return typeof x === 'object' ?
-          'new Boolean (' + show(x.valueOf()) + ')' :
-          x.toString();
+          'new Boolean (' + show (x.valueOf ()) + ')' :
+          x.toString ();
 
       case '[object Number]':
         return typeof x === 'object' ?
-          'new Number (' + show(x.valueOf()) + ')' :
-          1 / x === -Infinity ? '-0' : x.toString(10);
+          'new Number (' + show (x.valueOf ()) + ')' :
+          1 / x === -Infinity ? '-0' : x.toString (10);
 
       case '[object String]':
         return typeof x === 'object' ?
-          'new String (' + show(x.valueOf()) + ')' :
-          JSON.stringify(x);
+          'new String (' + show (x.valueOf ()) + ')' :
+          JSON.stringify (x);
 
       case '[object Date]':
         return 'new Date (' +
-               show(isNaN(x.valueOf()) ? NaN : x.toISOString()) +
+               show (isNaN (x.valueOf ()) ? NaN : x.toISOString ()) +
                ')';
 
       case '[object Error]':
-        return 'new ' + x.name + ' (' + show(x.message) + ')';
+        return 'new ' + x.name + ' (' + show (x.message) + ')';
 
       case '[object Arguments]':
         return 'function () { return arguments; } (' +
-               Array.prototype.map.call(x, show).join(', ') +
+               (Array.prototype.map.call (x, show)).join (', ') +
                ')';
 
       case '[object Array]':
-        seen.push(x);
+        seen.push (x);
         try {
-          return '[' + x.map(show).concat(
-            Object.keys(x)
-            .sort()
-            .filter(function(k) { return !/^\d+$/.test(k); })
-            .map(entry(x))
-          ).join(', ') + ']';
+          return '[' + ((x.map (show)).concat (
+            sortedKeys (x)
+            .filter (function(k) { return !(/^\d+$/.test (k)); })
+            .map (entry (x))
+          )).join (', ') + ']';
         } finally {
-          seen.pop();
+          seen.pop ();
         }
 
       case '[object Object]':
-        seen.push(x);
+        seen.push (x);
         try {
           return (
             $$show in x &&
             (x.constructor == null || x.constructor.prototype !== x) ?
-              x[$$show]() :
-              '{' + Object.keys(x).sort().map(entry(x)).join(', ') + '}'
+              x[$$show] () :
+              '{' + ((sortedKeys (x)).map (entry (x))).join (', ') + '}'
           );
         } finally {
-          seen.pop();
+          seen.pop ();
         }
 
       default:
-        return String(x);
+        return String (x);
 
     }
   }
