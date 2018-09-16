@@ -8,7 +8,7 @@ produce the original value if evaluated.
 This library provides a similar [`show`](#show) function.
 
 In general, this property should hold: `eval (show (x)) = x`. In some cases
-parens are necessary to ensure correct interpretation (`{}`, for example,
+parentheses are necessary to ensure correct interpretation (`{}`, for example,
 is an empty block rather than an empty object in some contexts). Thus the
 property is more accurately stated `eval ('(' + show (x) + ')') = x`.
 
