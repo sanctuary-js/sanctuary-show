@@ -5,6 +5,9 @@ const assert = require ('assert');
 const show = require ('..');
 
 
+//    NODE_VERSION :: Integer
+const NODE_VERSION = Number (process.version.replace (/^v|[.].*$/g, ''));
+
 //    eq :: a -> b -> Undefined !
 function eq(actual) {
   assert.strictEqual (arguments.length, eq.length);
@@ -81,7 +84,10 @@ test ('arrays', () => {
   eq (show ([])) ('[]');
   eq (show (['foo'])) ('["foo"]');
   eq (show (['foo', 'bar'])) ('["foo", "bar"]');
-  eq (show (/x/.exec ('xyz'))) ('["x", "index": 0, "input": "xyz"]');
+  eq (show (/x/.exec ('xyz')))
+     (NODE_VERSION < 10 ?
+      '["x", "index": 0, "input": "xyz"]' :
+      '["x", "groups": undefined, "index": 0, "input": "xyz"]');
   eq (show ((() => { const xs = []; xs.z = true; xs.a = true; return xs; }) ())) ('["a": true, "z": true]');
 });
 
@@ -132,5 +138,8 @@ test ('custom @@show method (prototype)', () => {
   };
   eq (show (Identity (['foo', 'bar', 'baz']))) ('Identity (["foo", "bar", "baz"])');
   eq (show (Identity ([Identity (1), Identity (2), Identity (3)]))) ('Identity ([Identity (1), Identity (2), Identity (3)])');
-  eq (show (Identity.prototype)) ('{"@@show": function () {\n    return `Identity (${show (this.value)})`;\n  }}');
+  eq (show (Identity.prototype))
+     (NODE_VERSION < 10 ?
+      '{"@@show": function () {\n    return `Identity (${show (this.value)})`;\n  }}' :
+      '{"@@show": function() {\n    return `Identity (${show (this.value)})`;\n  }}');
 });
