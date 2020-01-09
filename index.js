@@ -168,6 +168,22 @@
           seen.pop ();
         }
 
+      case '[object Set]':
+        seen.push (x);
+        try {
+          return 'new Set (' + show (Array.from (x.values ())) + ')';
+        } finally {
+          seen.pop ();
+        }
+
+      case '[object Map]':
+        seen.push (x);
+        try {
+          return 'new Map (' + show (Array.from (x.entries ())) + ')';
+        } finally {
+          seen.pop ();
+        }
+
       default:
         return String (x);
 

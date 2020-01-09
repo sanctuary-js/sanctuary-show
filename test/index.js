@@ -99,6 +99,36 @@ test ('objects', () => {
   eq (show (Object.create (null))) ('{}');
 });
 
+test ('sets', () => {
+  eq (show (new Set ([])))
+     (/***/'new Set ([])');
+  eq (show (new Set (['foo'])))
+     (/***/'new Set (["foo"])');
+  eq (show (new Set (['foo', 'bar'])))
+     (/***/'new Set (["foo", "bar"])');
+  eq (show (new Set (['foo', 'bar', 'baz'])))
+     (/***/'new Set (["foo", "bar", "baz"])');
+  eq (show (new Set ([new Set ([])])))
+     (/***/'new Set ([new Set ([])])');
+  eq (show (new Set ([new Set ([new Set ([])])])))
+     (/***/'new Set ([new Set ([new Set ([])])])');
+});
+
+test ('maps', () => {
+  eq (show (new Map ([])))
+     (/***/'new Map ([])');
+  eq (show (new Map ([['foo', 'foo']])))
+     (/***/'new Map ([["foo", "foo"]])');
+  eq (show (new Map ([['foo', 'foo'], ['bar', 'bar']])))
+     (/***/'new Map ([["foo", "foo"], ["bar", "bar"]])');
+  eq (show (new Map ([['foo', 'foo'], ['bar', 'bar'], ['baz', 'baz']])))
+     (/***/'new Map ([["foo", "foo"], ["bar", "bar"], ["baz", "baz"]])');
+  eq (show (new Map ([[new Map ([]), new Map ([])]])))
+     (/***/'new Map ([[new Map ([]), new Map ([])]])');
+  eq (show (new Map ([[new Map ([['kk', 'kv']]), new Map ([['vk', 'vv']])]])))
+     (/***/'new Map ([[new Map ([["kk", "kv"]]), new Map ([["vk", "vv"]])]])');
+});
+
 test ('other values', () => {
   eq (show (/def/g)) ('/def/g');
   eq (show (Math.sqrt)) ('function sqrt() { [native code] }');
