@@ -30,7 +30,7 @@ Maybe.prototype['@@show'] = function() {
 };
 ```
 
-### <a name="show" href="https://github.com/sanctuary-js/sanctuary-show/blob/v1.0.0/index.js#L63">`show :: Showable a => a -⁠> String`</a>
+### <a name="show" href="https://github.com/sanctuary-js/sanctuary-show/blob/v2.0.0/index.js#L68">`show :: Showable a => a -⁠> String`</a>
 
 Returns a useful string representation of the given value.
 
