@@ -30,7 +30,7 @@
 //. };
 //. ```
 
-(function(f) {
+(f => {
 
   'use strict';
 
@@ -43,27 +43,21 @@
     self.sanctuaryShow = f ();
   }
 
-} (function() {
+}) (() => {
 
   'use strict';
 
   //  $$show :: String
-  var $$show = '@@show';
+  const $$show = '@@show';
 
   //  seen :: Array Any
-  var seen = [];
+  const seen = [];
 
   //  entry :: Object -> String -> String
-  function entry(o) {
-    return function(k) {
-      return show (k) + ': ' + show (o[k]);
-    };
-  }
+  const entry = o => k => show (k) + ': ' + show (o[k]);
 
   //  sortedKeys :: Object -> Array String
-  function sortedKeys(o) {
-    return (Object.keys (o)).sort ();
-  }
+  const sortedKeys = o => (Object.keys (o)).sort ();
 
   //# show :: Showable a => a -> String
   //.
@@ -110,7 +104,7 @@
   //. > show ({x: [1, 2], y: [3, 4], z: [5, 6]})
   //. '{"x": [1, 2], "y": [3, 4], "z": [5, 6]}'
   //. ```
-  function show(x) {
+  const show = x => {
     if (seen.indexOf (x) >= 0) return '<Circular>';
 
     switch (Object.prototype.toString.call (x)) {
@@ -148,7 +142,7 @@
         try {
           return '[' + ((x.map (show)).concat (
             sortedKeys (x)
-            .filter (function(k) { return !(/^\d+$/.test (k)); })
+            .filter (k => !(/^\d+$/.test (k)))
             .map (entry (x))
           )).join (', ') + ']';
         } finally {
@@ -188,8 +182,8 @@
         return String (x);
 
     }
-  }
+  };
 
   return show;
 
-}));
+});
