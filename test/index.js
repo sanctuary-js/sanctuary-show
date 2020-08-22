@@ -75,9 +75,11 @@ test ('errors', () => {
 });
 
 test ('arguments', () => {
+  /* eslint-disable prefer-rest-params */
   eq (show (function() { return arguments; } ())) ('function () { return arguments; } ()');
   eq (show (function() { return arguments; } ('foo'))) ('function () { return arguments; } ("foo")');
   eq (show (function() { return arguments; } ('foo', 'bar'))) ('function () { return arguments; } ("foo", "bar")');
+  /* eslint-enable prefer-rest-params */
 });
 
 test ('arrays', () => {
