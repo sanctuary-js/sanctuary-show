@@ -133,7 +133,9 @@ test ('maps', () => {
 
 test ('other values', () => {
   eq (show (/def/g)) ('/def/g');
-  eq (show (Math.sqrt)) ('function sqrt() { [native code] }');
+  eq (show (Math.sqrt)) ('<object Function>');
+  eq (show (Object.defineProperty ({}, Symbol.toStringTag, {value: 'HTMLInputElement'})))
+     ('<object HTMLInputElement>');
 });
 
 test ('circular structures', () => {
@@ -170,8 +172,5 @@ test ('custom @@show method (prototype)', () => {
   };
   eq (show (Identity (['foo', 'bar', 'baz']))) ('Identity (["foo", "bar", "baz"])');
   eq (show (Identity ([Identity (1), Identity (2), Identity (3)]))) ('Identity ([Identity (1), Identity (2), Identity (3)])');
-  eq (show (Identity.prototype))
-     (NODE_VERSION < 10 ?
-      '{"@@show": function () {\n    return `Identity (${show (this.value)})`;\n  }}' :
-      '{"@@show": function() {\n    return `Identity (${show (this.value)})`;\n  }}');
+  eq (show (Identity.prototype)) ('{"@@show": <object Function>}');
 });
