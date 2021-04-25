@@ -107,7 +107,15 @@
   const show = x => {
     if (seen.indexOf (x) >= 0) return '<Circular>';
 
-    switch (Object.prototype.toString.call (x)) {
+    const repr = Object.prototype.toString.call (x);
+
+    switch (repr) {
+
+      case '[object Null]':
+        return 'null';
+
+      case '[object Undefined]':
+        return 'undefined';
 
       case '[object Boolean]':
         return typeof x === 'object' ?
@@ -123,6 +131,9 @@
         return typeof x === 'object' ?
           'new String (' + show (x.valueOf ()) + ')' :
           JSON.stringify (x);
+
+      case '[object RegExp]':
+        return x.toString ();
 
       case '[object Date]':
         return 'new Date (' +
@@ -179,7 +190,7 @@
         }
 
       default:
-        return String (x);
+        return repr.replace (/^\[(.*)\]$/, '<$1>');
 
     }
   };
