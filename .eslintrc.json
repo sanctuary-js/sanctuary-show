@@ -4,7 +4,7 @@
   "overrides": [
     {
       "files": ["*.md"],
-      "globals": {"Maybe": false, "show": false}
+      "globals": {"Maybe": "readonly", "show": "readonly"}
     }
   ]
 }
