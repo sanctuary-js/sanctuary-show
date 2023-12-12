@@ -1,12 +1,9 @@
-'use strict';
+import assert from 'node:assert';
 
-const assert = require ('assert');
+import test from 'oletus';
 
-const show = require ('..');
+import show from 'sanctuary-show';
 
-
-//    NODE_VERSION :: Integer
-const NODE_VERSION = Number (process.version.replace (/^v|[.].*$/g, ''));
 
 //    eq :: a -> b -> Undefined !
 function eq(actual) {
@@ -86,10 +83,7 @@ test ('arrays', () => {
   eq (show ([])) ('[]');
   eq (show (['foo'])) ('["foo"]');
   eq (show (['foo', 'bar'])) ('["foo", "bar"]');
-  eq (show (/x/.exec ('xyz')))
-     (NODE_VERSION < 10 ?
-      '["x", "index": 0, "input": "xyz"]' :
-      '["x", "groups": undefined, "index": 0, "input": "xyz"]');
+  eq (show (/x/.exec ('xyz'))) ('["x", "groups": undefined, "index": 0, "input": "xyz"]');
   eq (show ((() => { const xs = []; xs.z = true; xs.a = true; return xs; }) ())) ('["a": true, "z": true]');
 });
 

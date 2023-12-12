@@ -7,6 +7,11 @@
     "type": "git",
     "url": "git://github.com/sanctuary-js/sanctuary-show.git"
   },
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
   "files": [
     "/LICENSE",
     "/README.md",
@@ -15,6 +20,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "c8": "8.0.x",
+    "oletus": "4.0.x",
     "sanctuary-scripts": "6.0.x"
   },
   "scripts": {
@@ -22,8 +29,5 @@
     "lint": "sanctuary-lint",
     "release": "sanctuary-release",
     "test": "npm run lint && sanctuary-test && npm run doctest"
-  },
-  "mocha": {
-    "ui": "tdd"
   }
 }
