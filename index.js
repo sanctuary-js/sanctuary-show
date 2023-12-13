@@ -36,7 +36,7 @@ export {show as default};
 const $$show = '@@show';
 
 //  seen :: Array Any
-const seen = [];
+const seen = new WeakSet ();
 
 //  entry :: Object -> String -> String
 const entry = o => k => show (k) + ': ' + show (o[k]);
@@ -90,7 +90,7 @@ const sortedKeys = o => (Object.keys (o)).sort ();
 //. '{"x": [1, 2], "y": [3, 4], "z": [5, 6]}'
 //. ```
 const show = x => {
-  if (seen.indexOf (x) >= 0) return '<Circular>';
+  if (seen.has (x)) return '<Circular>';
 
   const repr = Object.prototype.toString.call (x);
 
@@ -134,7 +134,7 @@ const show = x => {
              ')';
 
     case '[object Array]':
-      seen.push (x);
+      seen.add (x);
       try {
         return '[' + ((x.map (show)).concat (
           sortedKeys (x)
@@ -142,11 +142,11 @@ const show = x => {
           .map (entry (x))
         )).join (', ') + ']';
       } finally {
-        seen.pop ();
+        seen.delete (x);
       }
 
     case '[object Object]':
-      seen.push (x);
+      seen.add (x);
       try {
         return (
           $$show in x &&
@@ -155,23 +155,23 @@ const show = x => {
             '{' + ((sortedKeys (x)).map (entry (x))).join (', ') + '}'
         );
       } finally {
-        seen.pop ();
+        seen.delete (x);
       }
 
     case '[object Set]':
-      seen.push (x);
+      seen.add (x);
       try {
         return 'new Set (' + show (Array.from (x.values ())) + ')';
       } finally {
-        seen.pop ();
+        seen.delete (x);
       }
 
     case '[object Map]':
-      seen.push (x);
+      seen.add (x);
       try {
         return 'new Map (' + show (Array.from (x.entries ())) + ')';
       } finally {
-        seen.pop ();
+        seen.delete (x);
       }
 
     default:
