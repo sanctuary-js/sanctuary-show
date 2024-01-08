@@ -4,8 +4,10 @@
   "parserOptions": {"sourceType": "module"},
   "overrides": [
     {
-      "files": ["*.md"],
-      "globals": {"Maybe": "readonly", "show": "readonly"}
+      "files": ["test/**/*.js"],
+      "rules": {
+        "max-len": ["off"]
+      }
     }
   ]
 }
