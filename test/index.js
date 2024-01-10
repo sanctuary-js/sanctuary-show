@@ -2,7 +2,7 @@ import {deepStrictEqual as eq} from 'node:assert';
 
 import test from 'oletus';
 
-import show from 'sanctuary-show';
+import show from '../index.js';
 
 
 test ('metadata', () => {
