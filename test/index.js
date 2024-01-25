@@ -156,5 +156,13 @@ test ('custom @@show method (prototype)', () => {
   };
   eq (show (Identity (['foo', 'bar', 'baz'])), 'Identity (["foo", "bar", "baz"])');
   eq (show (Identity ([Identity (1), Identity (2), Identity (3)])), 'Identity ([Identity (1), Identity (2), Identity (3)])');
-  eq (show (Identity.prototype), '{"@@show": <object Function>}');
+  eq (show (Identity.prototype), 'Identity (undefined)');
+});
+
+test ('custom @@show method (non-Object object)', () => {
+  function identity(x) {
+    return x;
+  }
+  identity['@@show'] = () => 'identity :: a -> a';
+  eq (show (identity), 'identity :: a -> a');
 });

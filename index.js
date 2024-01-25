@@ -90,17 +90,14 @@ const sortedKeys = o => (Object.keys (o)).sort ();
 //. '{"x": [1, 2], "y": [3, 4], "z": [5, 6]}'
 //. ```
 const show = x => {
+  if (x === null) return 'null';
+  if (x === undefined) return 'undefined';
+  if (typeof x[$$show] === 'function') return x[$$show] ();
   if (seen.has (x)) return '<Circular>';
 
   const repr = Object.prototype.toString.call (x);
 
   switch (repr) {
-
-    case '[object Null]':
-      return 'null';
-
-    case '[object Undefined]':
-      return 'undefined';
 
     case '[object Boolean]':
       return typeof x === 'object' ?
@@ -148,12 +145,7 @@ const show = x => {
     case '[object Object]':
       seen.add (x);
       try {
-        return (
-          $$show in x &&
-          (x.constructor == null || x.constructor.prototype !== x) ?
-            x[$$show] () :
-            '{' + ((sortedKeys (x)).map (entry (x))).join (', ') + '}'
-        );
+        return '{' + ((sortedKeys (x)).map (entry (x))).join (', ') + '}';
       } finally {
         seen.delete (x);
       }
