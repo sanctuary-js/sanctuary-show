@@ -48,8 +48,8 @@ const comparator = ({description: a}, {description: b}) => (
   /* otherwise */ 0
 );
 
-//  wellKnownSymbols :: Array Symbol
-const wellKnownSymbols = [
+//  wellKnownSymbols :: Set Symbol
+const wellKnownSymbols = new Set ([
   Symbol.asyncIterator,
   Symbol.hasInstance,
   Symbol.isConcatSpreadable,
@@ -63,7 +63,7 @@ const wellKnownSymbols = [
   Symbol.toPrimitive,
   Symbol.toStringTag,
   Symbol.unscopables,
-].filter (x => typeof x === 'symbol');
+].filter (x => typeof x === 'symbol'));
 
 //# show :: Showable a => a -> String
 //.
@@ -136,7 +136,7 @@ const show = x => {
         JSON.stringify (x);
 
     case '[object Symbol]':
-      for (const s of wellKnownSymbols) if (s === x) return x.description;
+      if (wellKnownSymbols.has (x)) return x.description;
       if (x.description === undefined) return 'Symbol ()';
       return 'Symbol (' + show (x.description) + ')';
 
