@@ -2,6 +2,9 @@
   "root": true,
   "extends": ["./node_modules/sanctuary-style/eslint.json"],
   "parserOptions": {"sourceType": "module"},
+  "rules": {
+    "eqeqeq": ["off"]
+  },
   "overrides": [
     {
       "files": ["test/**/*.js"],
