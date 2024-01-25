@@ -38,11 +38,32 @@ const $$show = '@@show';
 //  seen :: Array Any
 const seen = new WeakSet ();
 
-//  entry :: Object -> String -> String
-const entry = o => k => show (k) + ': ' + show (o[k]);
+//  comparator :: (Symbol, Symbol) -> ( -1 | 0 | +1 )
+const comparator = ({description: a}, {description: b}) => (
+  a === undefined && b === undefined ? 0 :
+  a === undefined ? -1 :
+  b === undefined ? +1 :
+  a < b ? -1 :
+  a > b ? +1 :
+  /* otherwise */ 0
+);
 
-//  sortedKeys :: Object -> Array String
-const sortedKeys = o => (Object.keys (o)).sort ();
+//  wellKnownSymbols :: Set Symbol
+const wellKnownSymbols = new Set ([
+  Symbol.asyncIterator,
+  Symbol.hasInstance,
+  Symbol.isConcatSpreadable,
+  Symbol.iterator,
+  Symbol.match,
+  Symbol.matchAll,
+  Symbol.replace,
+  Symbol.search,
+  Symbol.species,
+  Symbol.split,
+  Symbol.toPrimitive,
+  Symbol.toStringTag,
+  Symbol.unscopables,
+].filter (x => typeof x === 'symbol'));
 
 //# show :: Showable a => a -> String
 //.
@@ -114,6 +135,11 @@ const show = x => {
         'new String (' + show (x.valueOf ()) + ')' :
         JSON.stringify (x);
 
+    case '[object Symbol]':
+      if (wellKnownSymbols.has (x)) return x.description;
+      if (x.description === undefined) return 'Symbol ()';
+      return 'Symbol (' + show (x.description) + ')';
+
     case '[object RegExp]':
       return x.toString ();
 
@@ -133,11 +159,18 @@ const show = x => {
     case '[object Array]':
       seen.add (x);
       try {
-        return '[' + ((x.map (show)).concat (
-          sortedKeys (x)
-          .filter (k => !(/^\d+$/.test (k)))
-          .map (entry (x))
-        )).join (', ') + ']';
+        const keys = new Set (Object.keys (x));
+        const entries = x.map ((e, index) => {
+          keys.delete (String (index));
+          return show (e);
+        });
+        for (const k of [...keys].sort ()) {
+          entries.push (show (k) + ': ' + show (x[k]));
+        }
+        for (const k of (Object.getOwnPropertySymbols (x)).sort (comparator)) {
+          entries.push ('[' + show (k) + ']: ' + show (x[k]));
+        }
+        return '[' + entries.join (', ') + ']';
       } finally {
         seen.delete (x);
       }
@@ -145,7 +178,14 @@ const show = x => {
     case '[object Object]':
       seen.add (x);
       try {
-        return '{' + ((sortedKeys (x)).map (entry (x))).join (', ') + '}';
+        const entries = [];
+        for (const k of (Object.getOwnPropertyNames (x)).sort ()) {
+          entries.push (show (k) + ': ' + show (x[k]));
+        }
+        for (const k of (Object.getOwnPropertySymbols (x)).sort (comparator)) {
+          entries.push ('[' + show (k) + ']: ' + show (x[k]));
+        }
+        return '{' + entries.join (', ') + '}';
       } finally {
         seen.delete (x);
       }

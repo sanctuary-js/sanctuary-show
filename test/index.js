@@ -166,3 +166,47 @@ test ('custom @@show method (non-Object object)', () => {
   identity['@@show'] = () => 'identity :: a -> a';
   eq (show (identity), 'identity :: a -> a');
 });
+
+test ('well-known symbols', () => {
+  eq (show (Symbol.asyncIterator), 'Symbol.asyncIterator');
+  eq (show (Symbol.hasInstance), 'Symbol.hasInstance');
+  eq (show (Symbol.isConcatSpreadable), 'Symbol.isConcatSpreadable');
+  eq (show (Symbol.iterator), 'Symbol.iterator');
+  eq (show (Symbol.match), 'Symbol.match');
+  eq (show (Symbol.matchAll), 'Symbol.matchAll');
+  eq (show (Symbol.replace), 'Symbol.replace');
+  eq (show (Symbol.search), 'Symbol.search');
+  eq (show (Symbol.species), 'Symbol.species');
+  eq (show (Symbol.split), 'Symbol.split');
+  eq (show (Symbol.toPrimitive), 'Symbol.toPrimitive');
+  eq (show (Symbol.toStringTag), 'Symbol.toStringTag');
+  eq (show (Symbol.unscopables), 'Symbol.unscopables');
+});
+
+test ('private symbols', () => {
+  eq (show (Symbol ('x')), 'Symbol ("x")');
+  eq (show (Symbol ('')), 'Symbol ("")');
+  eq (show (Symbol ()), 'Symbol ()');
+});
+
+test ('globally accessible symbols', () => {
+  eq (show (Symbol.for ('x')), 'Symbol ("x")');
+});
+
+test ('object property symbols', () => {
+  eq (show ({[Symbol ()]: 0, [Symbol ()]: 0}), '{[Symbol ()]: 0, [Symbol ()]: 0}');
+  eq (show ({[Symbol ()]: 0, [Symbol ('')]: 0}), '{[Symbol ()]: 0, [Symbol ("")]: 0}');
+  eq (show ({[Symbol ('')]: 0, [Symbol ()]: 0}), '{[Symbol ()]: 0, [Symbol ("")]: 0}');
+  eq (show ({[Symbol ('x')]: 0, [Symbol ('y')]: 0}), '{[Symbol ("x")]: 0, [Symbol ("y")]: 0}');
+  eq (show ({[Symbol ('y')]: 0, [Symbol ('x')]: 0}), '{[Symbol ("x")]: 0, [Symbol ("y")]: 0}');
+  eq (show ({[Symbol ('x')]: 0, [Symbol ('x')]: 0}), '{[Symbol ("x")]: 0, [Symbol ("x")]: 0}');
+  eq (show ({x: 0, [Symbol ('x')]: 0}), '{"x": 0, [Symbol ("x")]: 0}');
+});
+
+test ('array property symbols', () => {
+  const xs = ['foo', 'bar', 'baz'];
+  xs.z = 0;
+  xs[Symbol ('y')] = 0;
+  xs[Symbol ('x')] = 0;
+  eq (show (xs), '["foo", "bar", "baz", "z": 0, [Symbol ("x")]: 0, [Symbol ("y")]: 0]');
+});
